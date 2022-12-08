@@ -10,31 +10,31 @@ const Persona = db.define('persona', {
     color: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         require: [true, 'El color es requerido']
     },
     nombre: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         require: [true, 'El nombre es requerido']
     },
     genero: {
         type: Sequelize.BOOLEAN,
         allowNull: true,
-        unique: true,
+        unique: false,
         require: [true, 'El género es requerido']
     },
     like: {
         type: Sequelize.BOOLEAN,
         allowNull: true,
-        unique: true,
+        unique: false,
         require: [true, 'El like es requerido']
     },
     location: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: false,
         require: [true, 'La ubicacion es requerida']
     },
 
