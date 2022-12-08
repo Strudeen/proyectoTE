@@ -1,0 +1,25 @@
+{
+  "name": "mini-scrum-kanbam",
+  "version": "1.0.0",
+  "description": "Proyecto de administración y seguimiento a proyectos de software",
+  "main": "app.js",
+  "author": "Team Developers",
+  "repository": "https://github.com/CristhianSilvaMelgar/mini-scrum-kanbam",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2",
+    "pg": "^8.8.0",
+    "sequelize": "^6.23.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
