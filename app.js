@@ -34,7 +34,7 @@ app.use(persona, require('./routes/persona'));
  */
 const conectar = async () => {
   //await db.drop();
-  //await db.sync({ force: true });
+  await db.sync({ force: true });
 }
 
 conectar();
