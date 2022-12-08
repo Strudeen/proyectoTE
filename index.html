@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ringa Tech - Red neuronal</title>
+	<style type="text/css">
+		#sitio {
+			padding: 5rem;
+			font-size: 5rem;
+			margin-left: 15rem;
+		}
+		.like{
+			font-size: 100px;
+			width: 100px;
+			height: 100px;
+		}
+	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+	
+	<div id="sitio">
+		Tecnologias emergentes
+	</div>
+
+	Color: <input data-jscolor="{value:'#CC66FF'}", onInput="update(this.jscolor)" id="color">
+	Nombre: <input type="text" id="nombre" onkeyup="changeName()">
+	Genero: <select name="genero" id="genero">
+			<option value="true" selected>Hombre</option>
+			<option value="false" >Mujer</option>
+		  </select>
+		<i onclick="like(this)" class="fa fa-thumbs-up"></i>
+		<button onclick="create()">Send</button>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.4.5/jscolor.min.js"></script>
+	<script src="https://unpkg.com/brain.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+
+	<script type="text/javascript">
+		
+		//Inicializar red neuronal
+		let network = new brain.NeuralNetwork();
+
+		
+		//Entrenarla, darle ejemplos de cuando poner
+		//texto blanco, o texto negro segun el fondo
+		network.train([
+			//Fondo negro (entrada en 0s) = texto blanco (salida = 1)
+			{input: {rojo: 0, verde: 0, azul: 0}, output: {color: 1}},
+			//Fondo blanco (entrada en 1s) = texto negro (salida = 0)
+			{input: {rojo: 1, verde: 1, azul: 1}, output: {color: 0}},
+			//Fondo verde, texto negro
+			{input: {rojo: 0, verde: 1, azul: 0}, output: {color: 0}},
+			//Fondo azul, texto blanco
+			{input: {rojo: 0, verde: .43, azul: 1}, output: {color: 1}},
+			//Fondo rojo, texto blanco
+			{input: {rojo: 1, verde: 0, azul: 0}, output: {color: 1}},
+		]);
+
+		const update=(color) => {
+			//Cuando hice el video, existia color.rgb
+			//Ahora existe color.channels y dentro tiene varios componentes.
+			//Aqui hacemos el objeto "rgb" para que sea similar al video
+			var rgb = [color.channels.r, color.channels.g, color.channels.b];
+			//console.log(rgb);
+
+			var div = document.getElementById("sitio");
+			div.style.background = color.toHEXString(); //Nueva forma para poner el color de fondo
+
+			//Tomar el fondo actual elegido por el usuario,
+			//para usarlo de entrada para que la red nos de su
+			//prediccion del mejor color de texto a utilizar
+			var entrada = {
+				rojo: rgb[0]/255,
+				verde: rgb[1]/255,
+				azul: rgb[2]/255,
+			};
+
+			//Obtener la prediccion de la red
+			var resultado = network.run(entrada);
+			//console.log(resultado);
+
+			//Si resultado > .5, se considera color de texto blanco
+			if (resultado.color > .5) {
+				div.style.color = "white";
+			}  else {
+				div.style.color = "black";
+			}
+		}
+
+		let div = document.getElementById("sitio");
+		let nombre = document.getElementById("nombre");
+		let genero = document.getElementById("genero").value;
+		let generoVal= genero === "true" ? true : false;
+		let likeValue = true;
+		let color = document.getElementById("color");
+
+		const changeName=()=>{
+			div.innerHTML= nombre.value;
+		}
+
+		function like(x) {
+			if(like){
+				x.classList.toggle("fa-thumbs-down");
+			}else{
+				x.classList.toggle("fa-thumbs-up");
+			}
+			
+			likeValue = !like;
+		}
+
+		const list = ()=>{
+			
+		}
+
+		const create= ()=>{
+			fetch("127.0.0.1:10000/api/persona/create",{
+				method:"POST",
+				body:JSON.stringify({
+					nombre:nombre.value,
+					genero:generoVal,
+					like:likeValue,
+					location:"Bolivia",
+					color:color.value
+				}),
+
+                headers:{
+					'Content-Type' : 'application/json; charset=UTF-8'
+				}
+			})
+			.then(res=>res.json)
+			.then(data => console.log(data));
+
+			// console.log(JSON.stringify({
+			// 		nombre:nombre.value,
+			// 		genero:generoVal,
+			// 		like:likeValue,
+			// 		location:"Bolivia",
+			// 		color:color.value
+			// 	}))
+			// axios({
+			// 	method: 'post',
+			// 	url: 'localhost:10000/api/persona/create',
+			// 	data: {
+			// 		nombre:nombre.value,
+			// 		genero:generoVal,
+			// 		like:likeValue,
+			// 		location:"Bolivia",
+			// 		color:color.value
+			// 	},
+			// 	headers:{
+			// 		'Content-Type' : 'application/json; charset=UTF-8'
+			// 	}
+			// })
+			// .then(function (response) {
+			// 	console.log(response);
+			// })
+			// .catch(function (error) {
+			// 	console.log(error);
+			// });
+		}
+	</script>
+</body>
+</html>
