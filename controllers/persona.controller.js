@@ -1,7 +1,7 @@
 const { response, request } = require('express');
 const Persona = require('../models/persona.models');
 const { v4: uuidv4 } = require('uuid');
-
+const { faker } = require('@faker-js/faker');
 
 const personaGet = async (req = request, res = response) => {
     try {
@@ -42,6 +42,34 @@ const personaPost = async (req = request, res = response) => {
     const persona = new Persona(data);
 
     await persona.save();
+
+    res.status(201).json({
+        msg: 'La persona ha sido creada'
+    });
+}
+
+const personaPostFaker = async (req = request, res = response) => {
+    
+    let personaArray = [];
+    for (let i=0; i<30; i++){
+        let nombre = faker.name.fullName();
+        let color = faker.color.rgb();
+        let location = faker.address.country();
+        let genero = faker.datatype.boolean();
+        let like = faker.datatype.boolean();
+        let uid = uuidv4();
+        personaArray.push({
+            nombre,
+            color,
+            location,
+            genero,
+            like,
+            uid
+        });
+
+    }
+
+    await Persona.bulkCreate(personaArray).then(() => console.log("Personas Guardadas"));
 
     res.status(201).json({
         msg: 'La persona ha sido creada'
@@ -92,5 +120,6 @@ module.exports = {
     personaPost,
     personaGetById,
     personaPut,
-    personaDelete
+    personaDelete,
+    personaPostFaker
 };

@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 
 const { validarCAMPOS } = require('../middlewares/validar_campos');
 
-const { personaGet, personaGetById, personaPost, personaPut, personaDelete } = require('../controllers/persona.controller');
+const { personaGet, personaGetById, personaPost, personaPut, personaDelete, personaPostFaker } = require('../controllers/persona.controller');
 
 const router = Router();
 
@@ -23,6 +23,8 @@ router.post('/create', [
     check('location', 'El location es obligatorio').not().isEmpty(),
     validarCAMPOS
 ], personaPost);
+
+router.post('/createBulk', [], personaPostFaker);
 
 router.put('/update/:uid', [
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
